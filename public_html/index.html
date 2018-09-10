@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Exchange Agio</title>
+  </head>
+  <body>
+    <main role="main" class="container">
+      <div class="input-group">
+        <select class="custom-select" id="cryptocur" aria-label="Crypto Currency">
+          <option value="btc" selected>BTC</option>
+          <option value="ltc">LTC</option>
+          <option value="bch">BCH</option>
+          <option value="dash">DASH</option>
+        </select>
+        <select class="custom-select" id="fiatcur" aria-label="Fiat Currency">
+          <option value="eur" selected>EUR</option>
+          <option value="usd">USD</option>
+        </select>
+      </div>
+      <h1 class="mt-5">Coin Agio</h1>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="text-center">
+              <div id="origincur">Loading...</div>
+            </th>
+            <th class="text-center">
+              <div id="destcur">Loading...</div>
+            </th>
+            <th class="text-center">
+              <div id="texchange">Loading...</div>
+            </th>
+            <th class="text-center">
+              <div id="cexchange">Loading...</div>
+            </th>
+            <th class="text-center">
+              <div id="agio">Agio (Premium)</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th><div id="coin">Loading...</div></th>
+            <td><div id="origincurv">Loading...</div></td>
+            <td><div id="destcurv">Loading...</div></td>
+            <td><div id="texchangev">Loading...</div></td>
+            <td><div id="cexchangev">Loading...</div></td>
+            <td><div id="agio">Loading...</div></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </main>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+
+    function test() {
+      // Get selected values
+      var ccoin= $('#cryptocur').find(":selected").val();
+      var dfiat= $('#fiatcur').find(":selected").val();
+      var ofiat="brl";
+
+      // write to the table
+      $("#coin").html(ccoin.toUpperCase());
+      $("#origincur").html(ofiat.toUpperCase());
+      $("#destcur").html(dfiat.toUpperCase());
+      $("#texchange").html(ofiat.toUpperCase()+"/"+dfiat.toUpperCase()+" (TransferWise)");
+      $("#cexchange").html(ofiat.toUpperCase()+"/"+dfiat.toUpperCase()+" (Crypto)");
+
+      // define json url
+      const oUrl = "https://broker.negociecoins.com.br/api/v3/"+ccoin+ofiat+"/ticker";
+      const dUrl = "http://api.coinbase.com/v2/prices/"+ccoin+"-"+dfiat+"/sell";
+      const tUrl = "https://api.sandbox.transferwise.tech/v1/rates?source="+ofiat+"&target="+dfiat;
+      console.log (tUrl);
+
+      $.getJSON(oUrl, function(result){
+        window.origincurv1=result.last;
+        $("#origincurv").html(window.origincurv1);
+      });
+
+      $.getJSON(dUrl, function(result){
+        window.destcurv1=result.data.amount;
+        $("#destcurv").html(window.destcurv1);
+      });
+
+      // TEMP:
+      var texchangev = 4.764;
+      $("#texchangev").html(texchangev);
+console.log(window.origincurv1);
+      var cexchangev = window.origincurv / window.destcurv;
+      $("#cexchangev").html(cexchangev);
+
+    }
+    test();
+    $("#cryptocur").change(test);
+    $("#fiatcur").change(test);
+    //$("select[id^=type]").change(test);
+    </script>
+  </body>
+</html>
