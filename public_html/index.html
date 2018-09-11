@@ -90,14 +90,14 @@
     $("#coin").html(ccoin.toUpperCase());
     $("#origincur").html(ofiat.toUpperCase());
     $("#destcur").html(dfiat.toUpperCase());
-    $("#texchange").html(ofiat.toUpperCase()+"/"+dfiat.toUpperCase()+" (Fixer.io + Transferwise Taxes)");
+    $("#texchange").html(ofiat.toUpperCase()+"/"+dfiat.toUpperCase()+" (currencyconverterapi + Transferwise Taxes)");
     $("#cexchange").html(ofiat.toUpperCase()+"/"+dfiat.toUpperCase()+" (Crypto)");
 
     // define json url
     const oUrl = "https://broker.negociecoins.com.br/api/v3/"+ccoin+ofiat+"/ticker";
     const dUrl = "https://api.coinbase.com/v2/prices/"+ccoin+"-"+dfiat+"/sell";
-    const tUrl = "http://data.fixer.io/api/latest?access_key=224b10756826df5330242dd9ed373580&symbols="+ofiat;
-
+    const tUrl = "https://free.currencyconverterapi.com/api/v6/convert?q="+dfiat+"_"+ofiat+"&compact=y";
+    console.log (tUrl);
     var iof = 3;
 
     function getValue(url){
@@ -110,7 +110,9 @@
 
     var origincurv1 =  parseFloat(getValue(oUrl).sell).toFixed(3);
     var destcurv1 =  parseFloat(getValue(dUrl).data.amount).toFixed(3);
-    var texchangev1 =  parseFloat(getValue(tUrl).rates.BRL);
+    var tUrl1 = getValue(tUrl);
+    var tUrlk = Object.keys(tUrl1)[0];
+    var texchangev1 =  parseFloat(tUrl1[tUrlk].val);
     var cexchangev1 = (origincurv1/destcurv1).toFixed(3);
     texchangev1=(texchangev1*1000*(1+iof/100)+7)/1000;
     var agiov1 = (cexchangev1-texchangev1)*100/texchangev1;
