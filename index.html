@@ -1,0 +1,135 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-2370475722727293",
+      enable_page_level_ads: true
+    });
+  </script>
+
+  <title>CoinAgio</title>
+</head>
+<body>
+  <main role="main" class="container">
+    <div class="input-group">
+      <select class="custom-select" id="cryptocur" aria-label="Crypto Currency">
+        <option value="btc" selected>BTC</option>
+        <option value="ltc">LTC</option>
+        <option value="bch">BCH</option>
+        <!-- <option value="dash">DASH</option> -->
+      </select>
+      <select class="custom-select" id="fiatcur" aria-label="Fiat Currency">
+        <option value="eur" selected>EUR</option>
+        <option value="usd">USD</option>
+      </select>
+    </div>
+    <h1 class="mt-5">Coin Agio</h1>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="text-center">
+            <div id="origincur">Loading...</div>
+          </th>
+          <th class="text-center">
+            <div id="destcur">Loading...</div>
+          </th>
+          <th class="text-center">
+            <div id="texchange">Loading...</div>
+          </th>
+          <th class="text-center">
+            <div id="cexchange">Loading...</div>
+          </th>
+          <th class="text-center">
+            <div id="agio">Agio (Premium)</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th><div id="coin">Loading...</div></th>
+          <td><div id="origincurv">Loading...</div></td>
+          <td><div id="destcurv">Loading...</div></td>
+          <td><div id="texchangev">Loading...</div></td>
+          <td><div id="cexchangev">Loading...</div></td>
+          <td><div id="agiov">Loading...</div></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </main>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+
+  function test() {
+
+    // Callback
+    var return_first;
+    function callback(response) {
+      return_first = response;
+      //use return_first variable here
+    }
+    // Get selected values
+    var ccoin= $('#cryptocur').find(":selected").val();
+    var dfiat= $('#fiatcur').find(":selected").val();
+    var ofiat="brl";
+
+    // write to the table
+    $("#coin").html(ccoin.toUpperCase());
+    $("#origincur").html(ofiat.toUpperCase());
+    $("#destcur").html(dfiat.toUpperCase());
+    $("#texchange").html(ofiat.toUpperCase()+"/"+dfiat.toUpperCase()+" (currencyconverterapi + Transferwise Taxes)");
+    $("#cexchange").html(ofiat.toUpperCase()+"/"+dfiat.toUpperCase()+" (Crypto)");
+
+    // define json url
+    const oUrl = "https://broker.negociecoins.com.br/api/v3/"+ccoin+ofiat+"/ticker";
+    const dUrl = "https://api.coinbase.com/v2/prices/"+ccoin+"-"+dfiat+"/sell";
+    const tUrl = "https://free.currencyconverterapi.com/api/v6/convert?q="+dfiat+"_"+ofiat+"&compact=y&apiKey=10f052b304e6b2f330e6";
+    console.log (tUrl);
+    var iof = 3;
+
+    function getValue(url){
+       var value= $.ajax({
+          url: url,
+          async: false
+       }).responseText;
+       return (jQuery.parseJSON(value));
+    }
+
+    var origincurv1 =  parseFloat(getValue(oUrl).sell).toFixed(3);
+    var destcurv1 =  parseFloat(getValue(dUrl).data.amount).toFixed(3);
+    var tUrl1 = getValue(tUrl);
+    var tUrlk = Object.keys(tUrl1)[0];
+    var texchangev1 =  parseFloat(tUrl1[tUrlk].val);
+    var cexchangev1 = (origincurv1/destcurv1).toFixed(3);
+    texchangev1=(texchangev1*1000*(1+iof/100)+7)/1000;
+    var agiov1 = (cexchangev1-texchangev1)*100/texchangev1;
+
+    $("#origincurv").html(origincurv1);
+    $("#destcurv").html(destcurv1);
+    $("#cexchangev").html(cexchangev1);
+    $("#texchangev").html(texchangev1.toFixed(3));
+    $("#agiov").html(agiov1.toFixed(3)+"%");
+
+  }
+  test();
+  $("#cryptocur").change(test);
+  $("#fiatcur").change(test);
+  //$("select[id^=type]").change(test);
+  </script>
+
+</body>
+</html>
