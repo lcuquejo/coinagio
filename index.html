@@ -86,17 +86,19 @@
     var ccoin= $('#cryptocur').find(":selected").val();
     var dfiat= $('#fiatcur').find(":selected").val();
     var ofiat="brl";
+    var oBroker = "bitcointrade"
+    var dBroker = "coinbase"
 
     // write to the table
     $("#coin").html(ccoin.toUpperCase());
-    $("#origincur").html(ofiat.toUpperCase());
-    $("#destcur").html(dfiat.toUpperCase());
+    $("#origincur").html(ofiat.toUpperCase()+" ("+oBroker+")");
+    $("#destcur").html(dfiat.toUpperCase()+" ("+dBroker+")");
     $("#texchange").html(ofiat.toUpperCase()+"/"+dfiat.toUpperCase()+" (currencyconverterapi + Transferwise Taxes)");
     $("#cexchange").html(ofiat.toUpperCase()+"/"+dfiat.toUpperCase()+" (Crypto)");
 
     // define json url
-    const oUrl = "https://broker.negociecoins.com.br/api/v3/"+ccoin+ofiat+"/ticker";
-    const dUrl = "https://api.coinbase.com/v2/prices/"+ccoin+"-"+dfiat+"/sell";
+    const oUrl = "https://api."+oBroker+".com.br/v2/public/"+ofiat+ccoin+"/ticker";
+    const dUrl = "https://api."+dBroker+".com/v2/prices/"+ccoin+"-"+dfiat+"/sell";
     const tUrl = "https://free.currencyconverterapi.com/api/v6/convert?q="+dfiat+"_"+ofiat+"&compact=y&apiKey=10f052b304e6b2f330e6";
     console.log (tUrl);
     var iof = 3;
@@ -109,7 +111,7 @@
        return (jQuery.parseJSON(value));
     }
 
-    var origincurv1 =  parseFloat(getValue(oUrl).sell).toFixed(3);
+    var origincurv1 =  parseFloat(getValue(oUrl).data.sell).toFixed(3);
     var destcurv1 =  parseFloat(getValue(dUrl).data.amount).toFixed(3);
     var tUrl1 = getValue(tUrl);
     var tUrlk = Object.keys(tUrl1)[0];
