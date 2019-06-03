@@ -98,7 +98,7 @@
     $("#cexchange").html(ofiat.toUpperCase()+"/"+dfiat.toUpperCase()+" (Crypto)");
 
     // define json url
-    const oUrl = "https://api."+oBroker+".com.br/v2/public/"+ofiat+ccoin+"/ticker";
+    const oUrl = "https://api."+oBroker+".com.br/v2/public/"+ofiat.toUpperCase()+ccoin.toUpperCase()+"/ticker";
     const dUrl = "https://api."+dBroker+".com/v2/prices/"+ccoin+"-"+dfiat+"/sell";
     const tUrl = "https://free.currencyconverterapi.com/api/v6/convert?q="+dfiat+"_"+ofiat+"&compact=y&apiKey=10f052b304e6b2f330e6";
     console.log (tUrl);
